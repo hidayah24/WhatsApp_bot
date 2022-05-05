@@ -5,12 +5,11 @@ from bot_chat import response
 
 class WhatsApp:
     #Defines the starting values
-    def __init__(self, speed=.5, clik_speed=.4, check_message=False):
+    def __init__(self, speed=.5, clik_speed=.4):
         self.speed = speed
         self.click_speed = clik_speed
         self.massage = ''
         self.last_massage = ''
-        self.check_message = check_message
 
     # Menavigasi pesan baru
     def nav_pesan_baru(self):
@@ -21,7 +20,6 @@ class WhatsApp:
             pt.doubleClick(interval=self.click_speed)
             self.check_message = True
         except Exception as e:
-            self.check_message = False
             print('Exception (nav_pesan_baru)', e)
     def nav_input_pesan(self):
         try:
@@ -66,31 +64,39 @@ class WhatsApp:
 
     def kirim_pesan(self):
         try:
-            if self.massage != self.last_massage:
+            if self.massage != self.last_massage and self.massage != '':
+                # mengisi pesan lama
+                self.last_massage = self.massage
                 bot_response = response(self.massage)
                 print('Jawaban: ', bot_response)
                 pt.typewrite(bot_response, interval=.1)
                 pt.typewrite('\n')
 
-                # mengisi pesan lama
-                self.last_massage = self.massage
-                self.check_message = False
             else:
                 print('Tidak ada pesan baru...')
         except Exception as e:
             print('Exception (kirim_pesan): ',e)
 
-wa_bot = WhatsApp(speed=.5, clik_speed=.2, check_message=False)
-sleep(3)
+    #menutup jendela balas
+    def nav_close(self):
+        try:
+            position = pt.locateOnScreen('x_btn.png', confidence=.9)
+            pt.moveTo(position[0:2], duration=self.speed)
+            pt.moveRel(10,10, duration=self.speed)
+            pt.click()
+        except Exception as e:
+            print('Exception (nav_close) :', e)
+
+wa_bot = WhatsApp(speed=.5, clik_speed=.2)
+sleep(5)
 
 while True:
+    wa_bot.nav_close()
     wa_bot.nav_pesan_baru()
-    if wa_bot.check_message:
-        wa_bot.nav_pesan()
-        wa_bot.get_pesan()
-        wa_bot.nav_input_pesan()
-        wa_bot.kirim_pesan()
-    else:
-        print(' Atau tidak ada pesan baru terdeteksi')
+    wa_bot.nav_close()
+    wa_bot.nav_pesan()
+    wa_bot.get_pesan()
+    wa_bot.nav_input_pesan()
+    wa_bot.kirim_pesan()
     # Jeda 10 detik untuk meng-cek pesan baru
     sleep(10)
