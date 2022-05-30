@@ -1,7 +1,7 @@
 import pyautogui as pt
 import pyperclip as pc
 from time import sleep
-from bot_chat import response
+from chat import response
 
 class WhatsApp:
     #Defines the starting values
@@ -18,7 +18,6 @@ class WhatsApp:
             pt.moveTo(position[0:2], duration=self.speed)
             pt.moveRel(-100, 0, duration=self.speed)
             pt.doubleClick(interval=self.click_speed)
-            self.check_message = True
         except Exception as e:
             print('Exception (nav_pesan_baru)', e)
     def nav_input_pesan(self):
