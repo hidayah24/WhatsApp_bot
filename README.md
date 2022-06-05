@@ -1,2 +1,3 @@
-# python_apps
-This repository is only for python app project
+# WhatsApp Bot
+This repository is use for whatsapp bot project only
+By Taufik Hidayah
